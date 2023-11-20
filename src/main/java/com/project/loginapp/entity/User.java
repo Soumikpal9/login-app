@@ -13,17 +13,13 @@ import lombok.NoArgsConstructor;
 public class User {
 
     @Id
-    @Column
     @GeneratedValue(strategy = GenerationType.UUID)
     private String userId;
 
-    @Column(length = 255)
     private String username;
 
-    @Column(length = 255)
     private String email;
 
-    @Column(length = 255)
     private String password;
 
 }

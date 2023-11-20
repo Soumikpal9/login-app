@@ -36,16 +36,22 @@ public class UserServiceImpl implements UserService {
     @Override
     public LoginResponse loginUser(LoginDto loginDto) {
         User user = userRepository.findByEmail(loginDto.getEmail());
+
+        LoginResponse loginResponse = new LoginResponse();
         if (user != null) {
             Boolean isPasswordCorrect = passwordEncoder.matches(loginDto.getPassword(), user.getPassword());
             if (isPasswordCorrect) {
-                return new LoginResponse("Login successful", true);
+                loginResponse.setMessage("Login successful");
+                loginResponse.setStatus(true);
             } else {
-                return new LoginResponse("Incorrect password", false);
+                loginResponse.setMessage("Incorrect password");
+                loginResponse.setStatus(false);
             }
         } else {
-            return new LoginResponse("Email does not exist", false);
+            loginResponse.setMessage("Email does not exist");
+            loginResponse.setStatus(false);
         }
+        return loginResponse;
     }
 
 }
