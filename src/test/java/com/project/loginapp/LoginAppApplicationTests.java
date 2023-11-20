@@ -45,7 +45,7 @@ class LoginAppApplicationTests {
 
 	@Test
 	@Order(2)
-	void loginUserTest() throws Exception {
+	void loginUserValidTest() throws Exception {
 		LoginDto loginDto = new LoginDto("user@test.com", "password");
 
 		mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/v1/user/login")
@@ -54,6 +54,32 @@ class LoginAppApplicationTests {
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Login successful"))
 				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(true));
+	}
+
+	@Test
+	@Order(3)
+	void loginUserInvalidEmailTest() throws Exception {
+		LoginDto loginDto = new LoginDto("email@test.com", "password");
+
+		mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/v1/user/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(loginDto)))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Email does not exist"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false));
+	}
+
+	@Test
+	@Order(4)
+	void loginUserIncorrectPasswordTest() throws Exception {
+		LoginDto loginDto = new LoginDto("user@test.com", "incorrectpassword");
+
+		mockMvc.perform(MockMvcRequestBuilders.post("http://localhost:8080/api/v1/user/login")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(loginDto)))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Incorrect password"))
+				.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(false));
 	}
 
 }
